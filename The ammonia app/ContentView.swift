@@ -29,6 +29,28 @@ struct ContentView: View {
         }
     }
 
+func findAttribute(status: MealStatus, find: String) -> String {
+    if find == "SF" {
+        if status == .attentionRequired {
+            return "exclamationmark.triangle"
+        } else if status == .expired {
+            return "xmark.seal"
+        } else {
+            return "checkmark.seal"
+        }
+    } else if find == "Colour" {
+        if status == .attentionRequired {
+            return "Orange"
+        } else if status == .expired {
+            return "Red"
+        } else {
+            return "Green"
+        }
+    } else {
+        return ""
+    }
+}
+
 #Preview {
     ContentView()
 }

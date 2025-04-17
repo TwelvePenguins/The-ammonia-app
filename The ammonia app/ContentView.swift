@@ -10,8 +10,8 @@ import SwiftUI
 struct ContentView: View {
     
     @State var meals: [Meal] = [
-        Meal(name: "Sandwiches", storedDate: Date.distantPast, plannedDate: Date(timeInterval: 31415, since: Date.now), expiryDate: Date(timeInterval: 301238, since: Date.now)),
-        Meal(name: "Pizza", storedDate: Date.distantPast, plannedDate: Date(timeInterval: 123673, since: Date.now), expiryDate: Date(timeInterval: 301238, since: Date.now)),
+        Meal(name: "Sandwiches", storedDate: Date.distantPast, plannedDate: Date(timeInterval: 3698, since: Date.now), expiryDate: Date(timeInterval: 301238, since: Date.now)),
+        Meal(name: "Pizza", storedDate: Date.distantPast, plannedDate: Date(timeInterval: -123673, since: Date.now), expiryDate: Date(timeInterval: 301238, since: Date.now)),
         Meal(name: "Noodles", storedDate: Date.distantPast, plannedDate: Date(timeInterval: 123673, since: Date.now), expiryDate: Date(timeInterval: -301238, since: Date.now)),
     ]
     
@@ -29,27 +29,7 @@ struct ContentView: View {
         }
     }
 
-func findAttribute(status: MealStatus, find: String) -> String {
-    if find == "SF" {
-        if status == .attentionRequired {
-            return "exclamationmark.triangle"
-        } else if status == .expired {
-            return "xmark.seal"
-        } else {
-            return "checkmark.seal"
-        }
-    } else if find == "Colour" {
-        if status == .attentionRequired {
-            return "Orange"
-        } else if status == .expired {
-            return "Red"
-        } else {
-            return "Green"
-        }
-    } else {
-        return ""
-    }
-}
+
 
 #Preview {
     ContentView()

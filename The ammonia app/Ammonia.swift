@@ -29,3 +29,33 @@ enum MealStatus: String {
     case expired
     case attentionRequired
 }
+
+func daysBetween(start: Date, end: Date) -> String {
+    let duration = DateInterval(start: start, end: end).duration
+    let returnString = Date(timeInterval: duration, since: end).formatted(.dateTime.dayOfYear()) + (abs(duration) <= 86400 ? " day" : " days")
+    return returnString
+}
+
+//TODO: change to array + join functionality???
+
+func findAttribute(status: MealStatus, find: String) -> String {
+    if find == "SF" {
+        if status == .attentionRequired {
+            return "exclamationmark.triangle"
+        } else if status == .expired {
+            return "xmark.seal"
+        } else {
+            return "checkmark.seal"
+        }
+    } else if find == "Colour" {
+        if status == .attentionRequired {
+            return "Orange"
+        } else if status == .expired {
+            return "Red"
+        } else {
+            return "Green"
+        }
+    } else {
+        return ""
+    }
+}

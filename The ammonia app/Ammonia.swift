@@ -25,37 +25,52 @@ struct Ammonia {
 }
 
 enum MealStatus: String {
-    case safe
-    case expired
-    case attentionRequired
+    case safe = "Safe"
+    case expired = "Expired"
+    case attentionRequired = "Attention Required"
 }
 
-func daysBetween(start: Date, end: Date) -> String {
-    let duration = DateInterval(start: start, end: end).duration
-    let returnString = Date(timeInterval: duration, since: end).formatted(.dateTime.dayOfYear()) + (abs(duration) <= 86400 ? " day" : " days")
-    return returnString
+func daysBetween(start: Date, end: Date, expiry: Bool = false) -> String {
+    var returnString: [String] = []
+    
+    let duration = DateInterval(start: start, end: end).duration // Issue accessing thru pantry
+    returnString.append(Date(timeInterval: duration, since: end).formatted(.dateTime.dayOfYear()))
+    returnString.append(abs(duration) <= 86400 ? "day" : "days")
+    
+    if expiry {
+        returnString.insert(duration <= 0 ? "Expired" : "Expiring in", at: 0)
+        returnString.append(duration <= 0 ? "ago" : "")
+    }
+    
+    return returnString.joined(separator: " ")
 }
 
 //TODO: change to array + join functionality???
 
 func findAttribute(status: MealStatus, find: String) -> String {
+    
+    var returnString = ""
+    
     if find == "SF" {
         if status == .attentionRequired {
-            return "exclamationmark.triangle"
+            returnString = "exclamationmark.triangle"
         } else if status == .expired {
-            return "xmark.seal"
+            returnString = "xmark.seal"
         } else {
-            return "checkmark.seal"
+            returnString = "checkmark.seal"
         }
+        return returnString
     } else if find == "Colour" {
         if status == .attentionRequired {
-            return "Orange"
+            returnString =  "Orange"
         } else if status == .expired {
-            return "Red"
+            returnString = "Red"
         } else {
-            return "Green"
+            returnString = "Green"
         }
+        return returnString
     } else {
-        return ""
+        return returnString
     }
+    
 }

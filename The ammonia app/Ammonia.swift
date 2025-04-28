@@ -11,11 +11,21 @@ struct Meal: Hashable, Identifiable {
     var id = UUID()
     var name: String
     var storedDate: Date = Date.now
-    var plannedDate: Date = Date.distantPast //TODO: Change after newMeal
+    var plannedDate: Date //TODO: Change after newMeal
     var isAlertOn: Bool = false
-    var expiryDate: Date = Date(timeInterval: 12318, since: Date.now) //TODO: Change after implementing prediction
+    var expiryDate: Date //TODO: Change after implementing prediction
     var isConsumed: Bool = false
-    var status: MealStatus = MealStatus.safe
+    var status: MealStatus {
+        if Date.now <= expiryDate {
+            if expiryDate <= plannedDate {
+                return .attentionRequired
+            } else {
+                return .safe
+            }
+        } else {
+            return .expired
+        }
+    }
 }
 
 struct Ammonia {
@@ -33,13 +43,13 @@ enum MealStatus: String {
 func daysBetween(start: Date, end: Date, expiry: Bool = false) -> String {
     var returnString: [String] = []
     
-    let duration = DateInterval(start: start, end: end).duration // Issue accessing thru pantry
+    let duration = start.timeIntervalSince(end) // Issue accessing thru pantry
     returnString.append(Date(timeInterval: duration, since: end).formatted(.dateTime.dayOfYear()))
-    returnString.append(abs(duration) <= 86400 ? "day" : "days")
+    returnString.append(abs(duration) >= 86400 ? "day" : "days")
     
     if expiry {
-        returnString.insert(duration <= 0 ? "Expired" : "Expiring in", at: 0)
-        returnString.append(duration <= 0 ? "ago" : "")
+        returnString.insert(duration >= 0 ? "Expired" : "Expiring in", at: 0)
+        returnString.append(duration >= 0 ? "ago" : "")
     }
     
     return returnString.joined(separator: " ")

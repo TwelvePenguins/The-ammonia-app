@@ -27,10 +27,10 @@ struct PantryView: View {
                         MealDetailView(meal: $meals[idx])
                     } label: {
                         HStack(alignment: .center) {
-                            VStack(alignment: .leading, spacing: 5) {
+                            VStack(alignment: .leading, spacing: 3) {
                                 Text(meals[idx].name)
                                     .bold()
-                                    .font(.title3)
+                                    .font(.headline)
                                 Text(daysBetween(start: Date.now,
                                                  end: meals[idx].expiryDate,
                                                  expiry: true))
@@ -40,6 +40,7 @@ struct PantryView: View {
                                             find: "Colour")
                                         )
                                     )
+                                    .font(.caption)
                             }
                             Spacer()
                             Image(systemName: findAttribute(

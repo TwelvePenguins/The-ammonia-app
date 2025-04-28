@@ -17,7 +17,7 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             HStack {
-                TabView{
+                TabView {
                     ForEach($upcomingMeals, id: \.self) { $meal in
                         VStack(alignment: .leading) {
                             Text(meal.name)
@@ -28,30 +28,38 @@ struct HomeView: View {
                                 Text(meal.status.rawValue)
                             }
                             .foregroundColor(Color(findAttribute(status: meal.status, find: "Colour")))
+                            .font(.footnote)
                             HStack {
                                 Image(systemName:"tray.and.arrow.down")
-                                Text("\(daysBetween(start: meal.storedDate, end: Date.now)) ago")
+                                Text(daysBetween(start: meal.storedDate, end: Date.now))
                             }
                             .foregroundStyle(.gray)
+                            .font(.footnote)
                             HStack(alignment: .center, spacing: 20) {
                                 Spacer()
                                 VStack(alignment: .center) {
-                                    Text("Expires in")
+                                    Text("Expiry")
                                         .foregroundStyle(.secondary)
+                                        .font(.caption)
                                     Text(daysBetween(start: Date.now, end: meal.expiryDate))
                                         .bold()
                                 }
+                                .scaledToFill()
+                                .frame(maxWidth: 80)
                                 Divider()
-                                  .frame(width: 2, height: 40)
+                                    .scaledToFill()
+                                    .frame(maxWidth: 2, maxHeight: 60)
                                   .background(Color.purple)
-//                                  .frame(maxHight: .infinity)
-                                  .padding(.horizontal, 8)
+                                  .padding(.horizontal, 12)
                                 VStack(alignment: .center) {
                                     Text("Planned for")
                                         .foregroundStyle(.secondary)
-                                    Text(daysBetween(start: Date.now, end: meal.expiryDate)) //TODO: add ago/later/today functionality
+                                        .font(.caption)
+                                    Text(daysBetween(start: Date.now, end: meal.expiryDate))
                                         .bold()
                                 }
+                                .scaledToFill()
+                                .frame(maxWidth: 80)
                                 Spacer()
                             }
                             .multilineTextAlignment(.center)
@@ -62,25 +70,26 @@ struct HomeView: View {
                                 .stroke(Color.purple, lineWidth: 3)
                         )
                     }
+                    .padding(15)
                 }
                 .padding(25)
                 .tabViewStyle(.page)
                 .indexViewStyle(.page(backgroundDisplayMode: .always))
             }
+            .navigationTitle(welcomeMsg)
+            .toolbar {
+                Button {
+                   // refresh functionality
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
+            }
         }
-        .navigationTitle(welcomeMsg)
         .onAppear {
             upcomingMeals = meals.sorted { $0.expiryDate < $1.expiryDate }
             upcomingMeals = upcomingMeals.filter { $0.expiryDate > Date.now }
             index = Int(Double(upcomingMeals.count)*0.3.rounded(.up))
             upcomingMeals = Array(upcomingMeals[..<index])
-        }
-        .toolbar {
-            Button {
-               // refresh functionality
-            } label: {
-                Image(systemName: "arrow.clockwise")
-            }
         }
     }
 }

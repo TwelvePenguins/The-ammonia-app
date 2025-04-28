@@ -46,16 +46,14 @@ func daysBetween(start: Date, end: Date, expiry: Bool = false) -> String {
     let duration = start.timeIntervalSince(end) // Issue accessing thru pantry
     returnString.append(Date(timeInterval: duration, since: end).formatted(.dateTime.dayOfYear()))
     returnString.append(abs(duration) >= 86400 ? "day" : "days")
+    returnString.append(duration >= 0 ? "ago" : "later")
     
     if expiry {
         returnString.insert(duration >= 0 ? "Expired" : "Expiring in", at: 0)
-        returnString.append(duration >= 0 ? "ago" : "")
     }
     
     return returnString.joined(separator: " ")
 }
-
-//TODO: change to array + join functionality???
 
 func findAttribute(status: MealStatus, find: String) -> String {
     

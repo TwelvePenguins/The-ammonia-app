@@ -8,11 +8,97 @@
 import SwiftUI
 
 struct MealDetailView: View {
+    
+    @Binding var meal: Meal
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationView {
+            VStack { // Stack of the view
+                Divider()
+                    .frame(height: 3)
+                    .padding(.bottom, 15)
+                Spacer()
+                VStack(alignment: .center) { // Stack of the card
+                    HStack {
+                        Image(systemName: findAttribute(status: meal.status, find: "SF"))
+                        Text(meal.status.rawValue)
+                    }
+                    .foregroundColor(Color(findAttribute(status: meal.status, find: "Colour")))
+                    HStack(alignment: .center, spacing: 20) {
+                        Spacer()
+                        VStack(alignment: .center) {
+                            Text("Expiry")
+                                .foregroundStyle(.secondary)
+                            Text(daysBetween(start: Date.now, end: meal.expiryDate))
+                                .bold()
+                        }
+                        Divider()
+                            .frame(width: 2, height: 40)
+                            .background(Color.purple)
+                            .padding(.horizontal, 8)
+                        VStack(alignment: .center) {
+                            Text("Planned for")
+                                .foregroundStyle(.secondary)
+                            Text(daysBetween(start: Date.now, end: meal.expiryDate))
+                                .bold()
+                        }
+                        Spacer()
+                    }
+                    .multilineTextAlignment(.center)
+                }
+                .padding(20)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30)
+                        .stroke(Color.purple, lineWidth: 3)
+                )
+                List {
+                    HStack {
+                        Text("Stored")
+                        Spacer()
+                        Text(meal.storedDate, style: .date)
+                            .foregroundStyle(.secondary)
+                            .font(.body)
+                    }
+                    HStack {
+                        Text("Planned for")
+                        Spacer()
+                        Text(meal.plannedDate, style: .date)
+                            .foregroundStyle(.secondary)
+                            .font(.body)
+                    }
+                    Toggle("Notification Reminders", isOn: $meal.isAlertOn)
+                }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .background(Color.clear)
+                // Graph here
+                Spacer()
+                Button {
+                    meal.isConsumed = true
+                } label: {
+                    Text("Mark as Consumed")
+                        .frame(height: 50)
+                        .frame(maxWidth: .infinity)
+                        .background(.accent)
+                        .cornerRadius(10)
+                        .foregroundStyle(.white)
+                }
+                .padding()
+            }
+            .padding(15)
+        }
+        .navigationTitle(meal.name)
+        .toolbar {
+            Button {
+                // Delete Function
+            } label: {
+                Image(systemName: "trash")
+            }
+            Button {
+                // Edit Function
+            } label: {
+                Image(systemName: "pencil")
+            }
+        }
     }
-}
-
-#Preview {
-    MealDetailView()
 }

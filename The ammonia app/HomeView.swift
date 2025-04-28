@@ -75,6 +75,13 @@ struct HomeView: View {
             index = Int(Double(upcomingMeals.count)*0.3.rounded(.up))
             upcomingMeals = Array(upcomingMeals[..<index])
         }
+        .toolbar {
+            Button {
+               // refresh functionality
+            } label: {
+                Image(systemName: "arrow.clockwise")
+            }
+        }
     }
 }
 

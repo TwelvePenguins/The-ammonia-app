@@ -51,6 +51,7 @@ struct MealDetailView: View {
                     RoundedRectangle(cornerRadius: 30)
                         .stroke(Color.purple, lineWidth: 3)
                 )
+                .animation(.easeIn(duration: 0.2), value: meal.status)
                 List {
                     HStack {
                         Text("Stored")
@@ -59,13 +60,7 @@ struct MealDetailView: View {
                             .foregroundStyle(.secondary)
                             .font(.body)
                     }
-                    HStack {
-                        Text("Planned for")
-                        Spacer()
-                        Text(meal.plannedDate, style: .date)
-                            .foregroundStyle(.secondary)
-                            .font(.body)
-                    }
+                    DatePicker("Planned Date", selection: $meal.plannedDate, in: Date.now..., displayedComponents: .date)
                     Toggle("Notification Reminders", isOn: $meal.isAlertOn)
                 }
                 .listStyle(.plain)
@@ -93,11 +88,6 @@ struct MealDetailView: View {
                 // Delete Function
             } label: {
                 Image(systemName: "trash")
-            }
-            Button {
-                // Edit Function
-            } label: {
-                Image(systemName: "pencil")
             }
         }
     }

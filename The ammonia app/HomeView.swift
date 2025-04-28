@@ -16,7 +16,7 @@ struct HomeView: View {
     
     var body: some View {
         NavigationView {
-            HStack {
+            VStack {
                 TabView {
                     ForEach($upcomingMeals, id: \.self) { $meal in
                         VStack(alignment: .leading) {
@@ -49,8 +49,8 @@ struct HomeView: View {
                                 Divider()
                                     .scaledToFill()
                                     .frame(maxWidth: 2, maxHeight: 60)
-                                  .background(Color.purple)
-                                  .padding(.horizontal, 12)
+                                    .background(Color("HighlightPurple"))
+                                    .padding(.horizontal, 12)
                                 VStack(alignment: .center) {
                                     Text("Planned for")
                                         .foregroundStyle(.secondary)
@@ -63,23 +63,97 @@ struct HomeView: View {
                                 Spacer()
                             }
                             .multilineTextAlignment(.center)
+                            HStack {
+                                Button {
+                                    meal.isConsumed.toggle()
+                                } label: {
+                                    HStack(alignment: .center) {
+                                        VStack(alignment: .center, spacing: 2) {
+                                            Text("Mark as")
+                                                .foregroundStyle(.secondary)
+                                                .font(.subheadline)
+                                            Text("Consumed")
+                                                .fontWeight(.heavy)
+                                                .foregroundStyle(.primary)
+                                                .font(.headline)
+                                        }
+                                        Image(systemName: meal.isConsumed ? "checkmark.square" : "square")
+                                    }
+                                    .padding(15)
+                                    .foregroundStyle(.white)
+                                    .frame(height: 50)
+                                    .scaledToFit()
+                                    .frame(maxWidth: .infinity)
+                                    .background(.accent)
+                                    .cornerRadius(10)
+                                }
+                                .padding(.horizontal, 10)
+                                NavigationLink {
+                                    MealDetailView(meal: $meal)
+                                } label: {
+                                    HStack(alignment: .center) {
+                                        VStack(alignment: .center, spacing: 2) {
+                                            Text("More")
+                                                .foregroundStyle(.secondary)
+                                                .font(.subheadline)
+                                            Text("Details")
+                                                .fontWeight(.heavy)
+                                                .foregroundStyle(.primary)
+                                                .font(.headline)
+                                        }
+                                        Image(systemName: "chevron.right")
+                                    }
+                                    .padding(15)
+                                    .foregroundStyle(.white)
+                                    .frame(height: 50)
+                                    .scaledToFit()
+                                    .background(.accent)
+                                    .cornerRadius(10)
+                                }
+                                .padding(.trailing, 10)
+                            }
+                            .padding(.horizontal, -15)
                         }
-                        .padding(30)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color.purple, lineWidth: 3)
-                        )
                     }
-                    .padding(15)
+                    .padding(.vertical, 30)
+                    .padding(.horizontal, 20)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 30)
+                            .stroke(.accent, lineWidth: 3)
+                            .padding(3)
+                    )
                 }
-                .padding(25)
-                .tabViewStyle(.page)
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
+                VStack(alignment: .leading) {
+                    Group {
+                        Text("Three ")
+                            .bold()
+                            .font(.title2)
+                            .foregroundStyle(.accent) +
+                        Text("meals are expiring ")
+                            .font(.title2) +
+                        Text("next Sunday.")
+                            .bold()
+                            .font(.title2)
+                            .foregroundStyle(.accent)
+                    }
+                    Text("Plan ahead if you can't finish in one day!")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    //Chart
+                }
+                .padding(30)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30)
+                        .stroke(.accent, lineWidth: 3)
+                )
             }
+            .padding(18)
+            .tabViewStyle(.page)
+            .indexViewStyle(.page(backgroundDisplayMode: .always))
             .navigationTitle(welcomeMsg)
             .toolbar {
                 Button {
-                   // refresh functionality
+                    // refresh functionality
                 } label: {
                     Image(systemName: "arrow.clockwise")
                 }

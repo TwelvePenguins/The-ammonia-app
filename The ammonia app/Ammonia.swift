@@ -31,7 +31,7 @@ struct Meal: Hashable, Identifiable {
 struct Ammonia: Identifiable, Hashable {
     var id = UUID()
     var date: Int
-    var count: Int = 0
+    var count: Double = 0.0
     var day: String
 }
 

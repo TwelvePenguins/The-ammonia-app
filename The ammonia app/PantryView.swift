@@ -12,48 +12,32 @@ struct PantryView: View {
     @Binding var meals: [Meal]
     @State private var searchKey: String = ""
     
-    private var filteredIndices: [Int] {
+    private var allMatching: [Int] {
         guard !searchKey.isEmpty else {
             return Array(meals.indices)
         }
         return meals.indices.filter { meals[$0].name.localizedCaseInsensitiveContains(searchKey) }
     }
     
+    private var consumedIndices: [Int] {
+            allMatching.filter { meals[$0].isConsumed }
+        }
+    
+    private var unconsumedIndices: [Int] {
+        allMatching.filter { !meals[$0].isConsumed }
+    }
+    
     var body: some View {
         NavigationView {
             List {
-                ForEach(filteredIndices, id: \.self) { idx in
-                    NavigationLink {
-                        MealDetailView(meal: $meals[idx])
-                    } label: {
-                        HStack(alignment: .center) {
-                            VStack(alignment: .leading, spacing: 3) {
-                                Text(meals[idx].name)
-                                    .bold()
-                                    .font(.headline)
-                                Text(daysBetween(start: Date.now,
-                                                 end: meals[idx].expiryDate,
-                                                 expiry: true))
-                                    .foregroundColor(
-                                        Color(findAttribute(
-                                            status: meals[idx].status,
-                                            find: "Colour")
-                                        )
-                                    )
-                                    .font(.caption)
-                            }
-                            Spacer()
-                            Image(systemName: findAttribute(
-                                status: meals[idx].status,
-                                find: "SF")
-                            )
-                            .foregroundColor(
-                                Color(findAttribute(
-                                    status: meals[idx].status,
-                                    find: "Colour")
-                                )
-                            )
-                        }
+                Section(header: Text("Unconsumed")) {
+                    ForEach(unconsumedIndices, id: \.self) { idx in
+                        PantryRowView(idx: idx, meals: $meals)
+                    }
+                }
+                Section(header: Text("Consumed")) {
+                    ForEach(consumedIndices, id: \.self) { idx in
+                        PantryRowView(idx: idx, meals: $meals)
                     }
                 }
             }

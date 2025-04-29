@@ -10,7 +10,7 @@ import SwiftUI
 struct ChartBarView: View {
     
     @State var date: Int
-    @State var value: Int
+    @State var value: Double
     @State var day: String
     
     var body: some View {

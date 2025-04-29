@@ -28,10 +28,11 @@ struct Meal: Hashable, Identifiable {
     }
 }
 
-struct Ammonia {
-    var date: Date
-    var day: String
+struct Ammonia: Identifiable, Hashable {
+    var id = UUID()
+    var date: Int
     var count: Int = 0
+    var day: String
 }
 
 enum MealStatus: String {

@@ -10,6 +10,15 @@ import SwiftUI
 struct MealDetailView: View {
     
     @Binding var meal: Meal
+    @State var chartData: [Ammonia] = [
+        Ammonia(date: 12, count: 3, day: "Mon"),
+        Ammonia(date: 13, count: 4, day: "Tue"),
+        Ammonia(date: 14, count: 3, day: "Wed"),
+        Ammonia(date: 15, count: 0, day: "Thu"),
+        Ammonia(date: 16, count: 2, day: "Fri"),
+        Ammonia(date: 17, count: 1, day: "Sat"),
+        Ammonia(date: 18, count: 3, day: "Sun")
+    ]
     
     var body: some View {
         NavigationView {
@@ -34,7 +43,7 @@ struct MealDetailView: View {
                         }
                         Divider()
                             .frame(width: 2, height: 40)
-                            .background(Color.purple)
+                            .background(Color.accent)
                             .padding(.horizontal, 8)
                         VStack(alignment: .center) {
                             Text("Planned for")
@@ -49,7 +58,7 @@ struct MealDetailView: View {
                 .padding(20)
                 .overlay(
                     RoundedRectangle(cornerRadius: 30)
-                        .stroke(Color.purple, lineWidth: 3)
+                        .stroke(Color.accent, lineWidth: 3)
                 )
                 .animation(.easeIn(duration: 0.2), value: meal.status)
                 List {
@@ -63,10 +72,28 @@ struct MealDetailView: View {
                     DatePicker("Planned Date", selection: $meal.plannedDate, in: Date.now..., displayedComponents: .date)
                     Toggle("Notification Reminders", isOn: $meal.isAlertOn)
                 }
+                .padding(.vertical, 15)
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
-                // Graph here
+                VStack(alignment: .leading) {
+                    Text("Ammonia over time")
+                        .bold()
+                        .font(.title2)
+                    HStack(alignment: .bottom, spacing: 0) {
+                        ForEach(chartData, id: \.self) { data in
+                            ChartBarView(date: data.date, value: data.count, day: data.day)
+                            if data.day != "Sun" {
+                                Spacer()
+                            }
+                        }
+                    }
+                }
+                .padding(30)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30)
+                        .stroke(Color.gray, lineWidth: 0.5)
+                )
                 Spacer()
                 Button {
                     meal.isConsumed = true
@@ -77,6 +104,7 @@ struct MealDetailView: View {
                         .background(.accent)
                         .cornerRadius(10)
                         .foregroundStyle(.white)
+                        .bold()
                 }
                 .padding()
             }

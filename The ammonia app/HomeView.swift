@@ -13,6 +13,15 @@ struct HomeView: View {
     @State var welcomeMsg: String = "Time to Feast!"
     @State var upcomingMeals: [Meal] = []
     @State var index: Int = 0
+    @State var chartData: [Ammonia] = [
+        Ammonia(date: 12, count: 3, day: "Mon"),
+        Ammonia(date: 13, count: 2, day: "Tue"),
+        Ammonia(date: 14, count: 3, day: "Wed"),
+        Ammonia(date: 15, count: 0, day: "Thu"),
+        Ammonia(date: 16, count: 2, day: "Fri"),
+        Ammonia(date: 17, count: 1, day: "Sat"),
+        Ammonia(date: 18, count: 3, day: "Sun")
+    ]
     
     var body: some View {
         NavigationView {
@@ -20,21 +29,24 @@ struct HomeView: View {
                 TabView {
                     ForEach($upcomingMeals, id: \.self) { $meal in
                         VStack(alignment: .leading) {
-                            Text(meal.name)
-                                .font(.title)
-                                .bold()
-                            HStack {
-                                Image(systemName: findAttribute(status: meal.status, find: "SF"))
-                                Text(meal.status.rawValue)
+                            VStack(alignment: .leading) {
+                                Text(meal.name)
+                                    .font(.title)
+                                    .bold()
+                                HStack {
+                                    Image(systemName: findAttribute(status: meal.status, find: "SF"))
+                                    Text(meal.status.rawValue)
+                                }
+                                .foregroundColor(Color(findAttribute(status: meal.status, find: "Colour")))
+                                .font(.callout)
+                                HStack {
+                                    Image(systemName:"tray.and.arrow.down")
+                                    Text(daysBetween(start: meal.storedDate, end: Date.now))
+                                }
+                                .foregroundStyle(.gray)
+                                .font(.callout)
                             }
-                            .foregroundColor(Color(findAttribute(status: meal.status, find: "Colour")))
-                            .font(.footnote)
-                            HStack {
-                                Image(systemName:"tray.and.arrow.down")
-                                Text(daysBetween(start: meal.storedDate, end: Date.now))
-                            }
-                            .foregroundStyle(.gray)
-                            .font(.footnote)
+                            .padding(.horizontal, 15)
                             HStack(alignment: .center, spacing: 20) {
                                 Spacer()
                                 VStack(alignment: .center) {
@@ -55,7 +67,7 @@ struct HomeView: View {
                                     Text("Planned for")
                                         .foregroundStyle(.secondary)
                                         .font(.caption)
-                                    Text(daysBetween(start: Date.now, end: meal.expiryDate))
+                                    Text(daysBetween(start: Date.now, end: meal.plannedDate))
                                         .bold()
                                 }
                                 .scaledToFill()
@@ -86,6 +98,8 @@ struct HomeView: View {
                                     .frame(maxWidth: .infinity)
                                     .background(.accent)
                                     .cornerRadius(10)
+                                    .animation(.bouncy, value: meal.isConsumed)
+                                    .shadow(radius: 5, y: 3)
                                 }
                                 .padding(.horizontal, 10)
                                 NavigationLink {
@@ -112,7 +126,7 @@ struct HomeView: View {
                                 }
                                 .padding(.trailing, 10)
                             }
-                            .padding(.horizontal, -15)
+                            .padding(.horizontal, 10)
                         }
                     }
                     .padding(.vertical, 30)
@@ -139,7 +153,15 @@ struct HomeView: View {
                     Text("Plan ahead if you can't finish in one day!")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    //Chart
+                    // Hard-coded chart
+                    HStack(alignment: .bottom, spacing: 0) {
+                        ForEach(chartData, id: \.self) { data in
+                            ChartBarView(date: data.date, value: data.count, day: data.day)
+                            if data.day != "Sun" {
+                                Spacer()
+                            }
+                        }
+                    }
                 }
                 .padding(30)
                 .overlay(

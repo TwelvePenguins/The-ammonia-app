@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MealDetailView: View {
     
+    @State var meals: [Meal]
     @Binding var meal: Meal
     @State var chartData: [Ammonia] = [
         Ammonia(date: 12, count: 1.5, day: "Mon"),
@@ -49,7 +50,7 @@ struct MealDetailView: View {
                             VStack(alignment: .center) {
                                 Text("Planned for")
                                     .foregroundStyle(.secondary)
-                                Text(daysBetween(start: Date.now, end: meal.expiryDate))
+                                Text(daysBetween(start: Date.now, end: meal.plannedDate))
                                     .bold()
                             }
                             Spacer()
@@ -116,7 +117,11 @@ struct MealDetailView: View {
         .navigationTitle(meal.name)
         .toolbar {
             Button {
-                // Delete Function
+                if let mealIndex = meals.firstIndex(where: {
+                    $0.id == meal.id
+                }) {
+                    meals.remove(at: mealIndex)
+                }
             } label: {
                 Image(systemName: "trash")
             }

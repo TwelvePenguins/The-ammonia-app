@@ -14,20 +14,28 @@ struct HomeView: View {
     @State var upcomingMeals: [Meal] = []
     @State var index: Int = 0
     @State var chartData: [Ammonia] = [
-        Ammonia(date: 12, count: 3, day: "Mon"),
-        Ammonia(date: 13, count: 2, day: "Tue"),
-        Ammonia(date: 14, count: 3, day: "Wed"),
-        Ammonia(date: 15, count: 0, day: "Thu"),
-        Ammonia(date: 16, count: 2, day: "Fri"),
-        Ammonia(date: 17, count: 1, day: "Sat"),
-        Ammonia(date: 18, count: 3, day: "Sun")
+        Ammonia(date: 12, count: 3.0, day: "Mon"),
+        Ammonia(date: 13, count: 2.0, day: "Tue"),
+        Ammonia(date: 14, count: 3.0, day: "Wed"),
+        Ammonia(date: 15, count: 0.0, day: "Thu"),
+        Ammonia(date: 16, count: 2.0, day: "Fri"),
+        Ammonia(date: 17, count: 1.0, day: "Sat"),
+        Ammonia(date: 18, count: 3.0, day: "Sun")
     ]
+    
+    private func refreshUpcoming() {
+        let notEaten   = meals.filter { !$0.isConsumed }
+        let stillFresh = notEaten.filter { $0.expiryDate > Date.now }
+        let sorted     = stillFresh.sorted { $0.expiryDate < $1.expiryDate }
+        let count      = ceil(Double(sorted.count) * 0.6)
+        upcomingMeals  = Array(sorted.prefix(Int(count)))
+    }
     
     var body: some View {
         NavigationView {
             VStack {
                 TabView {
-                    ForEach($upcomingMeals, id: \.self) { $meal in
+                    ForEach($upcomingMeals, id: \.self) { $meal in // Add case for no meal
                         VStack(alignment: .leading) {
                             VStack(alignment: .leading) {
                                 Text(meal.name)
@@ -103,7 +111,7 @@ struct HomeView: View {
                                 }
                                 .padding(.horizontal, 10)
                                 NavigationLink {
-                                    MealDetailView(meal: $meal)
+                                    MealDetailView(meals: meals, meal: $meal)
                                 } label: {
                                     HStack(alignment: .center) {
                                         VStack(alignment: .center, spacing: 2) {
@@ -123,6 +131,7 @@ struct HomeView: View {
                                     .scaledToFit()
                                     .background(.accent)
                                     .cornerRadius(10)
+                                    .shadow(radius: 5, y: 3)
                                 }
                                 .padding(.trailing, 10)
                             }
@@ -182,11 +191,8 @@ struct HomeView: View {
             }
         }
         .onAppear {
-            upcomingMeals = meals.sorted { $0.expiryDate < $1.expiryDate }
-            upcomingMeals = upcomingMeals.filter { $0.expiryDate > Date.now }
-            index = Int(Double(upcomingMeals.count)*0.3.rounded(.up))
-            upcomingMeals = Array(upcomingMeals[..<index])
+            refreshUpcoming()
         }
+        .onChange(of: meals) { _ in refreshUpcoming()}
     }
 }
-

@@ -6,13 +6,23 @@
 //
 
 import SwiftUI
+import Foundation
+
+let dateFormatter: DateFormatter = {
+    let df = DateFormatter()
+    df.dateFormat = "dd-MM-yyyy"
+    return df
+}()
 
 struct ContentView: View {
     
     @State var meals: [Meal] = [
-        Meal(name: "Sandwiches", storedDate: Date(timeInterval: -23487, since: Date.now), plannedDate: Date(timeInterval: 3698, since: Date.now), expiryDate: Date(timeInterval: 28329, since: Date.now)), // Should be safe
-        Meal(name: "Pizza", storedDate: Date(timeInterval: -2837, since: Date.now), plannedDate: Date(timeInterval: 12937, since: Date.now), expiryDate: Date(timeInterval: 1283, since: Date.now)), // Should be attention required
-        Meal(name: "Noodles", storedDate: Date(timeInterval: -123981, since: Date.now), plannedDate: Date(timeInterval: 123673, since: Date.now), expiryDate: Date(timeInterval: -301238, since: Date.now)), // Should be expired
+        Meal(name: "Chicken Sandwiches", storedDate: Date.now, plannedDate: dateFormatter.date(from: "03-05-2025")!, expiryDate: dateFormatter.date(from: "07-05-2025")!), // Should be safe
+        Meal(name: "Hawaiian Pizza", storedDate: Date.now, plannedDate: dateFormatter.date(from: "06-05-2025")!, expiryDate: dateFormatter.date(from: "02-05-2025")!), // Should be attention required
+        Meal(name: "Beef Noodles", storedDate: Date.now, plannedDate: dateFormatter.date(from: "03-05-2025")!, expiryDate: dateFormatter.date(from: "28-04-2025")!), // Should be expired
+        Meal(name: "Bak Kuh Teh", storedDate: dateFormatter.date(from: "28-04-2025")!, plannedDate: dateFormatter.date(from: "03-05-2025")!, expiryDate: dateFormatter.date(from: "29-04-2025")!), // Should be attention required
+        Meal(name: "Chicken Stew", storedDate: dateFormatter.date(from: "29-04-2025")!, plannedDate: dateFormatter.date(from: "04-05-2025")!, expiryDate: dateFormatter.date(from: "05-05-2025")!), // Should be safe
+
     ]
     
     var body: some View {
@@ -25,6 +35,9 @@ struct ContentView: View {
                 .tabItem {
                     Label("Pantry List", systemImage: "list.bullet")
                 }
-            }
+        }
+        .onAppear{
+            print(Date.now)
         }
     }
+}

@@ -44,13 +44,20 @@ enum MealStatus: String {
 func daysBetween(start: Date, end: Date, expiry: Bool = false) -> String {
     var returnString: [String] = []
     
-    let duration = start.timeIntervalSince(end) // Issue accessing thru pantry
-    returnString.append(Date(timeInterval: duration, since: end).formatted(.dateTime.dayOfYear()))
-    returnString.append(abs(duration) >= 86400 ? "day" : "days")
-    returnString.append(duration >= 0 ? "ago" : "later")
+    let duration = Calendar.current.dateComponents([.day], from: start, to: end).day ?? 0
     
-    if expiry {
-        returnString.insert(duration >= 0 ? "Expired" : "Expiring in", at: 0)
+    if duration == 0 {
+        returnString.append("Today")
+        if expiry {
+            returnString.insert(duration <= 0 ? "Expired" : "Expiring", at: 0)
+        }
+    } else {
+        returnString.append(String(abs(duration)))
+        returnString.append(abs(duration) >= 86400 ? "day" : "days")
+        returnString.append(duration <= 0 ? "ago" : "later")
+        if expiry {
+            returnString.insert(duration <= 0 ? "Expired" : "Expiring in", at: 0)
+        }
     }
     
     return returnString.joined(separator: " ")
@@ -81,5 +88,4 @@ func findAttribute(status: MealStatus, find: String) -> String {
     } else {
         return returnString
     }
-    
 }

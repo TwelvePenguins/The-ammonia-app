@@ -9,10 +9,12 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @Binding var meals: [Meal]
+    @Bindable var mealManager: MealManager
+    
     @State var welcomeMsg: String = "Time to Feast!"
     @State var upcomingMeals: [Meal] = []
     @State var index: Int = 0
+    
     @State var chartData: [Ammonia] = [
         Ammonia(date: 12, count: 3.0, day: "Mon"),
         Ammonia(date: 13, count: 2.0, day: "Tue"),
@@ -24,7 +26,7 @@ struct HomeView: View {
     ]
     
     private func refreshUpcoming() {
-        let notEaten   = meals.filter { !$0.isConsumed }
+        let notEaten   = mealManager.meals.filter { !$0.isConsumed }
         let stillFresh = notEaten.filter { $0.expiryDate > Date.now }
         let sorted     = stillFresh.sorted { $0.expiryDate < $1.expiryDate }
         let count      = ceil(Double(sorted.count) * 0.6)
@@ -115,7 +117,7 @@ struct HomeView: View {
                                 }
                                 .padding(.horizontal, 10)
                                 NavigationLink {
-                                    MealDetailView(meals: meals, meal: $meal)
+                                    MealDetailView(mealManager: mealManager, meal: $meal)
                                 } label: {
                                     HStack(alignment: .center) {
                                         VStack(alignment: .center, spacing: 2) {
@@ -201,6 +203,6 @@ struct HomeView: View {
         .onAppear {
             refreshUpcoming()
         }
-        .onChange(of: meals) { _ in refreshUpcoming()}
+        .onChange(of: mealManager.meals) { _ in refreshUpcoming()}
     }
 }

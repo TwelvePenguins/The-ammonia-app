@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Meal: Hashable, Identifiable {
+struct Meal: Hashable, Identifiable, Codable {
     var id = UUID()
     var name: String
     var storedDate: Date = Date.now

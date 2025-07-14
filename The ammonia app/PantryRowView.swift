@@ -10,24 +10,24 @@ import SwiftUI
 struct PantryRowView: View {
     
     @State var idx: Int
-    @Binding var meals: [Meal]
+    @Bindable var mealManager: MealManager
     
     var body: some View {
         NavigationLink {
-            MealDetailView(meals: meals, meal: $meals[idx])
+            MealDetailView(mealManager: mealManager, meal: $mealManager.meals[idx])
         } label: {
-            if meals[idx].isConsumed == false {
+            if mealManager.meals[idx].isConsumed == false {
                 HStack(alignment: .center) {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(meals[idx].name)
+                        Text(mealManager.meals[idx].name)
                             .bold()
                             .font(.headline)
                         Text(daysBetween(start: Date.now,
-                                         end: meals[idx].expiryDate,
+                                         end: mealManager.meals[idx].expiryDate,
                                          expiry: true))
                         .foregroundColor(
                             Color(findAttribute(
-                                status: meals[idx].status,
+                                status: mealManager.meals[idx].status,
                                 find: "Colour")
                             )
                         )
@@ -35,23 +35,23 @@ struct PantryRowView: View {
                     }
                     Spacer()
                     Image(systemName: findAttribute(
-                        status: meals[idx].status,
+                        status: mealManager.meals[idx].status,
                         find: "SF")
                     )
                     .foregroundColor(
                         Color(findAttribute(
-                            status: meals[idx].status,
+                            status: mealManager.meals[idx].status,
                             find: "Colour")
                         )
                     )
                 }
             } else {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(meals[idx].name)
+                    Text(mealManager.meals[idx].name)
                         .bold()
                         .font(.headline)
                         .foregroundStyle(.secondary)
-                    Text("Stored \(meals[idx].storedDate, style: .date)")
+                    Text("Stored \(mealManager.meals[idx].storedDate, style: .date)")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }

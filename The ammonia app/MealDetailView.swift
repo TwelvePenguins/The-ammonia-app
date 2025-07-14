@@ -9,8 +9,9 @@ import SwiftUI
 
 struct MealDetailView: View {
     
-    @State var meals: [Meal]
+    @Bindable var mealManager: MealManager // Here only for the deletion function - could figure out how to do just by the manager?
     @Binding var meal: Meal
+    
     @State var chartData: [Ammonia] = [
         Ammonia(date: 12, count: 1.5, day: "Mon"),
         Ammonia(date: 13, count: 2.0, day: "Tue"),
@@ -115,16 +116,16 @@ struct MealDetailView: View {
             }
         }
         .navigationTitle(meal.name)
-        .toolbar {
-            Button {
-                if let mealIndex = meals.firstIndex(where: {
-                    $0.id == meal.id
-                }) {
-                    meals.remove(at: mealIndex)
-                }
-            } label: {
-                Image(systemName: "trash")
-            }
-        }
+//        .toolbar {
+//            Button {
+//                if let mealIndex = meals.firstIndex(where: {
+//                    $0.id == meal.id
+//                }) {
+//                    meals.remove(at: mealIndex)
+//                }
+//            } label: {
+//                Image(systemName: "trash")
+//            }
+//        }
     }
 }

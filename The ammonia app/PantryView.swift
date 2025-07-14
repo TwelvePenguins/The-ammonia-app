@@ -9,23 +9,24 @@ import SwiftUI
 
 struct PantryView: View {
     
-    @Binding var meals: [Meal]
+    @Bindable var mealManager: MealManager
+    
     @State private var searchKey: String = ""
     @State var showDeleteAlert: Bool = false
     
     private var allMatching: [Int] {
         guard !searchKey.isEmpty else {
-            return Array(meals.indices)
+            return Array(mealManager.meals.indices)
         }
-        return meals.indices.filter { meals[$0].name.localizedCaseInsensitiveContains(searchKey) }
+        return mealManager.meals.indices.filter { mealManager.meals[$0].name.localizedCaseInsensitiveContains(searchKey) }
     }
     
     private var consumedIndices: [Int] {
-        allMatching.filter { meals[$0].isConsumed }
+        allMatching.filter { mealManager.meals[$0].isConsumed }
     }
     
     private var unconsumedIndices: [Int] {
-        allMatching.filter { !meals[$0].isConsumed }
+        allMatching.filter { !mealManager.meals[$0].isConsumed }
     }
     
     var body: some View {
@@ -33,7 +34,7 @@ struct PantryView: View {
             List {
                 Section(header: Text("Unconsumed")) {
                     ForEach(unconsumedIndices, id: \.self) { idx in
-                        PantryRowView(idx: idx, meals: $meals)
+                        PantryRowView(idx: idx, mealManager: mealManager)
                             .swipeActions {
                                 Button {
                                     showDeleteAlert = true
@@ -44,12 +45,12 @@ struct PantryView: View {
                                 }
                                 .tint(Color.red)
                                 Button {
-                                    meals[idx].isConsumed = true
+                                    mealManager.meals[idx].isConsumed = true
                                 } label: {
                                     HStack{
                                         Image(systemName: "checkmark.square")
                                     }
-                                    .animation(.easeIn(duration: 0.2), value: meals[idx].isConsumed)
+                                    .animation(.easeIn(duration: 0.2), value: mealManager.meals[idx].isConsumed)
                                 }
                                 .tint(Color.accent)
                             }
@@ -60,7 +61,7 @@ struct PantryView: View {
                                     Text("Cancel")
                                 }
                                 Button(role: .destructive) {
-                                    meals.remove(at: idx)
+                                    mealManager.meals.remove(at: idx)
                                 } label: {
                                     Text("Delete")
                                 }
@@ -71,7 +72,7 @@ struct PantryView: View {
                 }
                 Section(header: Text("Consumed")) {
                     ForEach(consumedIndices, id: \.self) { idx in
-                        PantryRowView(idx: idx, meals: $meals)
+                        PantryRowView(idx: idx, mealManager: mealManager)
                     }
                 }
             }

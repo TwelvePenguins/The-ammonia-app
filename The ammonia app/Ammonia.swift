@@ -26,6 +26,10 @@ struct Meal: Hashable, Identifiable, Codable {
             return .expired
         }
     }
+    
+    //Non-core anomaly detection: Check if anomaly exists (ie. normal for both or not) then act accordingly.
+    var temperature: AnomalyTrend = .normal
+    var humidity: AnomalyTrend = .normal
 }
 
 struct Ammonia: Identifiable, Hashable {
@@ -39,6 +43,12 @@ enum MealStatus: String {
     case safe = "Safe"
     case expired = "Expired"
     case attentionRequired = "Attention Required"
+}
+
+enum AnomalyTrend: String, Codable {
+    case higher = "Higher than usual"
+    case normal = "Normal"
+    case lower = "Lower than usual"
 }
 
 func daysBetween(start: Date, end: Date, expiry: Bool = false) -> String {

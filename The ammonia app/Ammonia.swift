@@ -66,7 +66,7 @@ func daysBetween(start: Date, end: Date, expiry: Bool = false) -> String {
         returnString.append(abs(duration) >= 86400 ? "day" : "days")
         returnString.append(duration <= 0 ? "ago" : "later")
         if expiry {
-            returnString.insert(duration <= 0 ? "Expired" : "Expiring in", at: 0)
+            returnString.insert(duration <= 0 ? "Expired" : "Expiring", at: 0)
         }
     }
     

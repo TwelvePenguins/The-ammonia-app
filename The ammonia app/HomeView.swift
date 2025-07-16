@@ -16,13 +16,13 @@ struct HomeView: View {
     @State var index: Int = 0
     
     @State var chartData: [Ammonia] = [
-        Ammonia(date: 12, count: 3.0, day: "Mon"),
-        Ammonia(date: 13, count: 2.0, day: "Tue"),
-        Ammonia(date: 14, count: 3.0, day: "Wed"),
-        Ammonia(date: 15, count: 0.0, day: "Thu"),
-        Ammonia(date: 16, count: 2.0, day: "Fri"),
-        Ammonia(date: 17, count: 1.0, day: "Sat"),
-        Ammonia(date: 18, count: 3.0, day: "Sun")
+        Ammonia(date: 14, count: 0.0, day: "Mon"),
+        Ammonia(date: 15, count: 1.5, day: "Tue"),
+        Ammonia(date: 16, count: 3.0, day: "Wed"),
+        Ammonia(date: 17, count: 0.0, day: "Thu"),
+        Ammonia(date: 18, count: 0.0, day: "Fri"),
+        Ammonia(date: 19, count: 1.5, day: "Sat"),
+        Ammonia(date: 20, count: 0.0, day: "Sun")
     ]
     
     private func refreshUpcoming() {
@@ -55,7 +55,7 @@ struct HomeView: View {
                                 .font(.callout)
                                 HStack {
                                     Image(systemName:"tray.and.arrow.down")
-                                    Text(daysBetween(start: meal.storedDate, end: Date.now))
+                                    Text(daysBetween(start: Date.now, end: meal.storedDate))
                                 }
                                 .foregroundStyle(.gray)
                                 .font(.callout)
@@ -157,14 +157,14 @@ struct HomeView: View {
 
                 VStack(alignment: .leading) {
                     Group {
-                        Text("Three ")
+                        Text("Two ")
                             .bold()
                             .font(.title2)
                             .foregroundStyle(.accent) +
                         Text("meals are expiring ")
                             .fontWeight(.medium)
                             .font(.title2) +
-                        Text("this Monday.")
+                        Text("this Wednesday.")
                             .bold()
                             .font(.title2)
                             .foregroundStyle(.accent)

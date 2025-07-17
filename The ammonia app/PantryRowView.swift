@@ -9,25 +9,25 @@ import SwiftUI
 
 struct PantryRowView: View {
     
-    @State var idx: Int
+    @Binding var meal: Meal
     @Bindable var mealManager: MealManager
     
     var body: some View {
-        NavigationLink {
-            MealDetailView(mealManager: mealManager, meal: $mealManager.meals[idx])
-        } label: {
-            if mealManager.meals[idx].isConsumed == false {
+        if meal.isConsumed == false {
+            NavigationLink {
+                MealDetailView(mealManager: mealManager, meal: $meal)
+            } label: {
                 HStack(alignment: .center) {
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(mealManager.meals[idx].name)
+                        Text(meal.name)
                             .bold()
                             .font(.headline)
                         Text(daysBetween(start: Date.now,
-                                         end: mealManager.meals[idx].expiryDate,
+                                         end: meal.expiryDate,
                                          expiry: true))
                         .foregroundColor(
                             Color(findAttribute(
-                                status: mealManager.meals[idx].status,
+                                status: meal.status,
                                 find: "Colour")
                             )
                         )
@@ -35,26 +35,26 @@ struct PantryRowView: View {
                     }
                     Spacer()
                     Image(systemName: findAttribute(
-                        status: mealManager.meals[idx].status,
+                        status: meal.status,
                         find: "SF")
                     )
                     .foregroundColor(
                         Color(findAttribute(
-                            status: mealManager.meals[idx].status,
+                            status: meal.status,
                             find: "Colour")
                         )
                     )
                 }
-            } else {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(mealManager.meals[idx].name)
-                        .bold()
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-                    Text("Stored \(mealManager.meals[idx].storedDate, style: .date)")
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
-                }
+            }
+        } else {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(meal.name)
+                    .bold()
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                Text("Stored \(meal.storedDate, style: .date)")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
             }
         }
     }

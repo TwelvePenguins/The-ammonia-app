@@ -25,6 +25,32 @@ import Observation
         load()
     }
     
+    var sortedMeals: [Meal] {
+        get {
+            sort(meals: meals, by: selectedSortMethod)
+        }
+        
+        set {
+            for meal in newValue {
+                let mealIndex = meals.firstIndex(where: { $0.id == meal.id })!
+                meals[mealIndex] = meal
+            }
+        }
+    }
+    
+    var selectedSortMethod = SortingMethods.expiryDate
+    
+    private func sort(meals: [Meal], by sortingMethod: SortingMethods) -> [Meal] {
+        switch sortingMethod {
+        case .expiryDate:
+            return meals.sorted { $0.expiryDate < $1.expiryDate }
+        case .plannedDate:
+            return meals.sorted { $0.plannedDate < $1.plannedDate }
+        case .storedDate:
+            return meals.sorted { $0.storedDate < $1.storedDate }
+        }
+    }
+    
     private func getArchiveURL() -> URL {
         URL.documentsDirectory.appending(path: "meals.json")
     }

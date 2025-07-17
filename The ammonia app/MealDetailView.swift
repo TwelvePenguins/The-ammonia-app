@@ -13,6 +13,7 @@ struct MealDetailView: View {
     @Binding var meal: Meal
     
     @State var isPopoverPresented: Bool = false
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         NavigationView {
@@ -122,6 +123,7 @@ struct MealDetailView: View {
                 Spacer()
                 Button {
                     meal.isConsumed = true
+                    dismiss()
                 } label: {
                     Text("Mark as Consumed")
                         .frame(height: 50)

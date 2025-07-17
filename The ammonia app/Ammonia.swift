@@ -99,3 +99,9 @@ func findAttribute(status: MealStatus, find: String) -> String {
         return returnString
     }
 }
+
+enum SortingMethods {
+    case storedDate
+    case plannedDate
+    case expiryDate
+}

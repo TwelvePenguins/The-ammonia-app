@@ -12,7 +12,7 @@ struct HomeView: View {
     @Bindable var mealManager: MealManager
     
     @State var welcomeMsg: String = "Time to Feast!"
-    @State var upcomingMeals: [Meal] = []
+//    @State var upcomingMeals: [Meal] = []
     @State var index: Int = 0
     
     @State var chartData: [Ammonia] = [
@@ -25,13 +25,13 @@ struct HomeView: View {
         Ammonia(date: 20, count: 0.0, day: "Sun")
     ]
     
-    private func refreshUpcoming() {
-        let notEaten   = mealManager.meals.filter { !$0.isConsumed }
-        let stillFresh = notEaten.filter { $0.expiryDate > Date.now }
-        let sorted     = stillFresh.sorted { $0.expiryDate < $1.expiryDate }
-        let count      = ceil(Double(sorted.count) * 0.6)
-        upcomingMeals  = Array(sorted.prefix(Int(count)))
-    }
+//    private func refreshUpcoming() {
+//        let notEaten   = mealManager.meals.filter { !$0.isConsumed }
+//        let stillFresh = notEaten.filter { $0.expiryDate > Date.now }
+//        let sorted     = stillFresh.sorted { $0.expiryDate < $1.expiryDate }
+//        let count      = ceil(Double(sorted.count) * 0.6)
+//        upcomingMeals  = Array(sorted.prefix(Int(count)))
+//    }
     
     var body: some View {
         NavigationView {
@@ -41,8 +41,8 @@ struct HomeView: View {
                     .font(.callout)
                     .padding(.leading, 20)
                 TabView {
-                    if !upcomingMeals.isEmpty {
-                        ForEach($upcomingMeals, id: \.self) { $meal in // Add case for no meal
+                    if !mealManager.upcomingMeals.isEmpty {
+                        ForEach(mealManager.upcomingMeals, id: \.self) { meal in
                             VStack(alignment: .leading) {
                                 VStack(alignment: .leading) {
                                     Text(meal.name)
@@ -92,8 +92,8 @@ struct HomeView: View {
                                 .multilineTextAlignment(.center)
                                 HStack {
                                     Button {
+                                        guard meal.isConsumed == false else { return }
                                         mealManager.meals[mealManager.meals.firstIndex(of: meal)!].isConsumed = true
-                                        refreshUpcoming()
                                     } label: {
                                         HStack(alignment: .center) {
                                             VStack(alignment: .center, spacing: 2) {
@@ -118,7 +118,7 @@ struct HomeView: View {
                                     }
                                     .padding(.horizontal, 10)
                                     NavigationLink {
-                                        MealDetailView(mealManager: mealManager, meal: $meal)
+                                        MealDetailView(mealManager: mealManager, meal: $mealManager.meals[mealManager.meals.firstIndex(of: meal)!])
                                     } label: {
                                         HStack(alignment: .center) {
                                             VStack(alignment: .center, spacing: 2) {
@@ -152,7 +152,7 @@ struct HomeView: View {
                                 .stroke(.accent, lineWidth: 3)
                                 .padding(3)
                         )
-                    } else if upcomingMeals.isEmpty {
+                    } else if mealManager.upcomingMeals.isEmpty {
                         Text("No upcoming meals")
                             .foregroundStyle(.secondary)
                             .overlay(
@@ -205,7 +205,7 @@ struct HomeView: View {
             .navigationTitle(welcomeMsg)
         }
         .onAppear {
-            refreshUpcoming()
+            print("refreshing")
         }
     }
 }

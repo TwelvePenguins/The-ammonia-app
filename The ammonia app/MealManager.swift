@@ -25,6 +25,14 @@ import Observation
         load()
     }
     
+    var upcomingMeals: [Meal] {
+        let notEaten   = meals.filter { !$0.isConsumed }
+        let stillFresh = notEaten.filter { $0.expiryDate > Date.now }
+        let sorted     = stillFresh.sorted { $0.expiryDate < $1.expiryDate }
+        let count      = ceil(Double(sorted.count) * 0.6)
+        return Array(sorted.prefix(Int(count)))
+    }
+    
     var sortedMeals: [Meal] {
         get {
             sort(meals: meals, by: selectedSortMethod)

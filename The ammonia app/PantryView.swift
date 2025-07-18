@@ -15,6 +15,7 @@ struct PantryView: View {
     @State private var deleteMealID: Meal.ID? = nil    // NEW: track which index to delete
     @State var showDeleteAlert: Bool = false
     @State var refresh: Bool = false
+    @State var showNewMealSheet: Bool = false
     
     private var allMatching: [Int] {
         guard !searchKey.isEmpty else {
@@ -34,30 +35,32 @@ struct PantryView: View {
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Unconsumed")) {
-                    ForEach(unconsumedIndices, id: \.self) { idx in
-                        PantryRowView(meal: $mealManager.sortedMeals[idx], mealManager: mealManager)
-                            .swipeActions {
-                                Button {
-                                    showDeleteAlert = true
-                                    deleteMealID = mealManager.sortedMeals[idx].id
-                                } label: {
-                                    HStack{
-                                        Image(systemName: "trash")
+                if !unconsumedIndices.isEmpty {
+                    Section(header: Text("Unconsumed")) {
+                        ForEach(unconsumedIndices, id: \.self) { idx in
+                            PantryRowView(meal: $mealManager.sortedMeals[idx], mealManager: mealManager)
+                                .swipeActions {
+                                    Button {
+                                        showDeleteAlert = true
+                                        deleteMealID = mealManager.sortedMeals[idx].id
+                                    } label: {
+                                        HStack{
+                                            Image(systemName: "trash")
+                                        }
                                     }
+                                    .tint(Color.red)
+                                    Button {
+                                        withAnimation(.easeIn(duration: 0.2)) {
+                                            mealManager.sortedMeals[idx].isConsumed = true
+                                        }
+                                    } label: {
+                                        HStack{
+                                            Image(systemName: "checkmark.square")
+                                        }
+                                    }
+                                    .tint(Color.accent)
                                 }
-                                .tint(Color.red)
-                                Button {
-                                    withAnimation(.easeIn(duration: 0.2)) {
-                                        mealManager.sortedMeals[idx].isConsumed = true
-                                    }
-                                } label: {
-                                    HStack{
-                                        Image(systemName: "checkmark.square")
-                                    }
-                                }
-                                .tint(Color.accent)
-                            }
+                        }
                     }
                 }
                 if !consumedIndices.isEmpty {
@@ -93,9 +96,12 @@ struct PantryView: View {
             .navigationTitle("Pantry")
             .toolbar {
                 Button {
-                    // Add sheet
+                    showNewMealSheet = true
                 } label: {
                     Image(systemName: "plus")
+                }
+                .sheet(isPresented: $showNewMealSheet) {
+                    NewMealView(mealManager: mealManager)
                 }
                 
                 Menu {

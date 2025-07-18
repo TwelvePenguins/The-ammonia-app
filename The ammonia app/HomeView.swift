@@ -163,7 +163,7 @@ struct HomeView: View {
                             )
                     }
                 }
-                .padding(.bottom, -19)
+                .padding([.bottom, .top], -19)
                 .offset(y: -15)
                 
                 VStack(alignment: .leading) {

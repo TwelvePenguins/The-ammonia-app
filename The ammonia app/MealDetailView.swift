@@ -12,6 +12,7 @@ struct MealDetailView: View {
     @Bindable var mealManager: MealManager // Here only for the deletion function - could figure out how to do just by the manager?
     @Binding var meal: Meal
     
+    @State var isDeleteAlertShown: Bool = false
     @State var isPopoverPresented: Bool = false
     @Environment(\.dismiss) private var dismiss
     
@@ -100,7 +101,7 @@ struct MealDetailView: View {
                             .padding(5)
                             .presentationCompactAdaptation(.popover)
                         }
-
+                        
                     } else {
                         Text("Anomaly Detected.")
                             .bold()
@@ -139,15 +140,29 @@ struct MealDetailView: View {
             .navigationTitle(meal.name)
             .toolbar {
                 Button {
-                    //                if let mealIndex = meals.firstIndex(where: {
-                    //                    $0.id == meal.id
-                    //                }) {
-                    //                    meals.remove(at: mealIndex)
-                    //                }
+                    isDeleteAlertShown = true
                 } label: {
                     Image(systemName: "trash")
                 }
             }
+            .alert("Are you sure you want to delete this meal?", isPresented: $isDeleteAlertShown, actions: {
+                Button(role: .cancel) {
+                    // Do Nothing
+                } label: {
+                    Text("Cancel")
+                }
+                Button(role: .destructive) {
+                    let idxToRemove = mealManager.meals.firstIndex { $0.id == meal.id }
+                    withAnimation(.snappy(duration: 0.2)) {
+                        mealManager.meals.remove(at: idxToRemove!)
+                    }
+                    dismiss()
+                } label: {
+                    Text("Delete")
+                }
+            }, message: {
+                Text("This action cannot be undone.")
+            })
         }
     }
 }

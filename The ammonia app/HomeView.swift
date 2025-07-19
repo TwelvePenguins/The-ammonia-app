@@ -12,8 +12,8 @@ struct HomeView: View {
     @Bindable var mealManager: MealManager
     
     @State var welcomeMsg: String = "Time to Feast!"
-//    @State var upcomingMeals: [Meal] = []
     @State var index: Int = 0
+    @State private var isAnimating: Bool = false
     
     @State var chartData: [Ammonia] = [
         Ammonia(date: 14, count: 0.0, day: "Mon"),
@@ -24,14 +24,6 @@ struct HomeView: View {
         Ammonia(date: 19, count: 1.5, day: "Sat"),
         Ammonia(date: 20, count: 0.0, day: "Sun")
     ]
-    
-//    private func refreshUpcoming() {
-//        let notEaten   = mealManager.meals.filter { !$0.isConsumed }
-//        let stillFresh = notEaten.filter { $0.expiryDate > Date.now }
-//        let sorted     = stillFresh.sorted { $0.expiryDate < $1.expiryDate }
-//        let count      = ceil(Double(sorted.count) * 0.6)
-//        upcomingMeals  = Array(sorted.prefix(Int(count)))
-//    }
     
     var body: some View {
         NavigationView {
@@ -94,6 +86,12 @@ struct HomeView: View {
                                     Button {
                                         guard meal.isConsumed == false else { return }
                                         mealManager.meals[mealManager.meals.firstIndex(of: meal)!].isConsumed = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                                            isAnimating = true
+                                            print("isAnimating true")
+                                        }
+                                        isAnimating = false
+                                        print("isAnimating false")
                                     } label: {
                                         HStack(alignment: .center) {
                                             VStack(alignment: .center, spacing: 2) {
@@ -118,7 +116,9 @@ struct HomeView: View {
                                     }
                                     .padding(.horizontal, 10)
                                     NavigationLink {
-                                        MealDetailView(mealManager: mealManager, meal: $mealManager.meals[mealManager.meals.firstIndex(of: meal)!])
+                                        if !isAnimating {
+                                            MealDetailView(mealManager: mealManager, meal: $mealManager.meals[mealManager.meals.firstIndex(of: meal)!])
+                                        }
                                     } label: {
                                         HStack(alignment: .center) {
                                             VStack(alignment: .center, spacing: 2) {
@@ -139,6 +139,11 @@ struct HomeView: View {
                                         .background(.accent)
                                         .cornerRadius(10)
                                         .shadow(radius: 5, y: 3)
+                                    }
+                                    .onTapGesture {
+                                        guard isAnimating else {
+                                            return print("gesture mid animation")
+                                        }
                                     }
                                     .padding(.trailing, 10)
                                 }
@@ -203,9 +208,6 @@ struct HomeView: View {
             .tabViewStyle(.page)
             .indexViewStyle(.page(backgroundDisplayMode: .always))
             .navigationTitle(welcomeMsg)
-        }
-        .onAppear {
-            print("refreshing")
         }
     }
 }
